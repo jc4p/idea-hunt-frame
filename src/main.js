@@ -259,7 +259,7 @@ function openModal(idea) {
   modal.className = 'modal';
 
   const modalHeader = document.createElement('h2');
-  modalHeader.textContent = 'SUPPORT IDEA';
+  modalHeader.textContent = 'SUPPORT IDEA: ' + idea.title;
   modal.appendChild(modalHeader);
 
   const currenciesContainer = document.createElement('div');
