@@ -219,13 +219,15 @@ const submitVote = async (ideaId, currencyId) => {
         }]
       });
       txHash = tx;
-      alert('Transaction sent:' + JSON.stringify(txHash));
+      alert('Transaction sent 1:' + txHash);
       console.log('Transaction sent:', txHash);
     } catch (error) {
       alert('Error sending transaction', error);
       console.error('Error sending transaction', error);
       return;
     }
+
+    alert('Transaction sent 2:' + txHash);
 
     await fetch(`${API_URL}/submit-vote`, {
       method: 'POST',
