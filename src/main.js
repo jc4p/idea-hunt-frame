@@ -168,7 +168,7 @@ const submitVote = async (ideaId, currencyId) => {
           value: ethToWei(0.001)
         }]
       });
-      txHash = tx.transactionHash;
+      txHash = tx;
       console.log('Transaction sent:', txHash);
     } catch (error) {
       console.error('Error sending transaction', error);
@@ -218,7 +218,7 @@ const submitVote = async (ideaId, currencyId) => {
           value: '0x0'
         }]
       });
-      txHash = tx.transactionHash;
+      txHash = tx;
       alert('Transaction sent:', txHash);
       console.log('Transaction sent:', txHash);
     } catch (error) {
