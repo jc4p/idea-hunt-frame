@@ -172,6 +172,20 @@ const submitVote = async (ideaId, currencyId) => {
       console.error('Error sending transaction', error);
       return;
     }
+
+    
+    await fetch(`${API_URL}/submit-vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ideaId: ideaId,
+        currencyId: currencyId,
+        coins: 0.001,
+        fid: frame.sdk.context.user.fid,
+        txHash: txHash
+      })
+    });
+
     const ideas = await fetchIdeas();
     renderIdeas(ideas);
   } else {
@@ -206,6 +220,7 @@ const submitVote = async (ideaId, currencyId) => {
       body: JSON.stringify({
         ideaId: ideaId,
         currencyId: currencyId,
+        coins: 100,
         fid: frame.sdk.context.user.fid,
         txHash: txHash
       })
