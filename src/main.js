@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ideas = await fetchIdeas();
   console.log(ideas);
   renderIdeas(ideas);
+  frame.sdk.actions.ready();
 
   let isOnBase = false;
   try {
@@ -169,8 +170,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!isOnBase) {
     console.log("not on base, can't vote");
   }
-
-  frame.sdk.actions.ready();
 });
 
 const ethToWei = (eth) => {
