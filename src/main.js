@@ -174,6 +174,8 @@ const submitVote = async (ideaId, currencyId) => {
       console.error('Error sending transaction', error);
       return;
     }
+
+    const fid = await (frame.sdk.context.user).fid
     
     await fetch(`${API_URL}/submit-vote`, {
       method: 'POST',
@@ -182,7 +184,7 @@ const submitVote = async (ideaId, currencyId) => {
         ideaId: ideaId,
         currencyId: currencyId,
         coins: 0.001,
-        fid: frame.sdk.context.user.fid,
+        fid: fid,
         txHash: txHash
       })
     });
@@ -227,8 +229,6 @@ const submitVote = async (ideaId, currencyId) => {
     }
 
     const fid = await (frame.sdk.context.user).fid
-
-    alert('Fid:' + fid);
 
     await fetch(`${API_URL}/submit-vote`, {
       method: 'POST',
