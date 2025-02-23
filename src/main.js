@@ -190,11 +190,12 @@ const submitVote = async (ideaId, currencyId) => {
     renderIdeas(ideas);
   } else {
     const transferFunctionSignature = '0xa9059cbb';
-    const contractAddress = currency.contract_address;
-    const paddedAddress = contractAddress.slice(2).padStart(64, '0');
-    const amount = ethToWei(100).toString(16);
+    const recipient = CONTRACT_ADDRESS;
+    const recipientPadded = recipient.slice(2).padStart(64, '0');
+
+    const amount = ethToWei(100)
     const paddedAmount = amount.padStart(64, '0');
-    const data = `${transferFunctionSignature}${paddedAddress}${paddedAmount}`;
+    const data = `${transferFunctionSignature}${recipientPadded}${paddedAmount}`;
 
     let txHash = null;
     try {
@@ -202,7 +203,7 @@ const submitVote = async (ideaId, currencyId) => {
         method: 'eth_sendTransaction',
         params: [{
           from: loggedInWallet[0],
-          to: contractAddress,
+          to: CONTRACT_ADDRESS,
           data: data,
           value: '0x0'
         }]
