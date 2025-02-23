@@ -219,7 +219,7 @@ const submitVote = async (ideaId, currencyId) => {
         }]
       });
       txHash = tx;
-      alert('Transaction sent:', txHash);
+      alert('Transaction sent:', JSON.stringify(txHash));
       console.log('Transaction sent:', txHash);
     } catch (error) {
       alert('Error sending transaction', error);
