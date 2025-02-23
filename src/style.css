@@ -113,14 +113,14 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  margin-left: 1rem;
 }
 
 .pool-icon {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .modal-overlay {
@@ -158,13 +158,12 @@ body {
   border: 1px solid #000;
   padding: 0.5rem;
   cursor: pointer;
-  margin-left: 1rem;
 }
 
 .currency-logo {
   width: 20px;
   height: 20px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .vote-button {
