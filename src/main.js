@@ -117,6 +117,18 @@ function renderIdeas(ideas) {
     list.appendChild(item);
   });
 
+  const listFooter = document.createElement('div');
+  listFooter.className = 'list-footer';
+  listFooter.textContent = 'Upon a completion of an idea the developer will receive 90% of the total amount raised.';
+
+  const footerAddIdeaButton = document.createElement('button');
+  footerAddIdeaButton.className = 'add-idea-button';
+  footerAddIdeaButton.textContent = 'SUBMIT IDEA';
+  footerAddIdeaButton.addEventListener('click', openAddIdeaModal);
+
+  listFooter.appendChild(footerAddIdeaButton);
+  list.appendChild(listFooter);
+
   container.appendChild(list);
   app.appendChild(container);
 }
