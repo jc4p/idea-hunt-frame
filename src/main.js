@@ -86,7 +86,11 @@ function renderIdeas(ideas) {
         poolItem.appendChild(poolIcon);
 
         const poolAmount = document.createElement('p');
-        poolAmount.textContent = Math.round(pool.total_amount).toLocaleString();
+        if (pool.currency_name == 'ETH') {
+          poolAmount.textContent = pool.total_amount.toFixed(3)
+        } else {
+          poolAmount.textContent = Math.round(pool.total_amount)
+        }
         poolItem.appendChild(poolAmount);
 
         poolsContainer.appendChild(poolItem);
