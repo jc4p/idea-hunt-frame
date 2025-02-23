@@ -358,34 +358,33 @@ function openAddIdeaModal() {
   submitButton.textContent = 'SUBMIT';
   submitButton.className = 'submit-idea-button';
   submitButton.addEventListener('click', async () => {
+    submitButton.disabled = true; // Prevent further clicks
+  
     const title = titleInput.value.trim();
     const description = descriptionInput.value.trim();
     if (!title || !description) {
       alert('Please enter both title and description.');
+      submitButton.disabled = false;
       return;
     }
     try {
-      const fid = await (frame.sdk.context.user).fid
+      const fid = await frame.sdk.context.user.fid;
       const response = await fetch(`${API_URL}/submit-idea`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          description,
-          creatorFid: fid
-        })
+        body: JSON.stringify({ title, description, creatorFid: fid })
       });
       if (!response.ok) {
         throw new Error('Failed to submit idea.');
       }
-
       const ideas = await fetchIdeas();
       renderIdeas(ideas);
     } catch (error) {
       console.error('Error submitting idea', error);
     }
     document.body.removeChild(modalOverlay);
-  });
+  }, { once: true });
+  
   modal.appendChild(submitButton);
 
   modalOverlay.addEventListener('click', (e) => {
