@@ -9,7 +9,7 @@ async function getCurrencies() {
   return data;
 }
 
-const CONTRACT_ADDRESS = '0x1Ba2aF9529920731c248f20f716d8E9F3A0319A4';
+const CONTRACT_ADDRESS = '0x14C451E98F1ef59A5D14DA7e6324DDF19c2CB6a0';
 
 getCurrencies().then(currencies => {
   console.log(currencies);
