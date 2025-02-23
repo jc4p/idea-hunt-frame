@@ -2,6 +2,7 @@ import './style.css';
 import * as frame from '@farcaster/frame-sdk';
 
 const API_URL = 'https://idea-hunt-api.kasra.codes';
+// const API_URL = 'http://localhost:3000';
 
 async function getCurrencies() {
   const response = await fetch(`${API_URL}/currencies`);
@@ -126,6 +127,22 @@ async function fetchIdeas() {
   return data;
 }
 
+// Helper functions to show/hide the waiting overlay
+function showTransactionOverlay() {
+  const overlay = document.createElement('div');
+  overlay.id = 'transaction-overlay';
+  overlay.className = 'transaction-overlay';
+  overlay.innerHTML = '<p>WAITING FOR TRANSACTION...</p>';
+  document.body.appendChild(overlay);
+}
+
+function hideTransactionOverlay() {
+  const overlay = document.getElementById('transaction-overlay');
+  if (overlay) {
+    document.body.removeChild(overlay);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const ideas = await fetchIdeas();
   console.log(ideas);
@@ -164,17 +181,40 @@ const submitVote = async (ideaId, currencyId) => {
   console.log('submit vote', ideaId, currencyId);
   const currency = window.currencies.find(c => c.id == currencyId);
   console.log(currency);
+
+  const price = PRICE_LOOKUP[currency.name];
+
+  const fid = await (frame.sdk.context.user).fid;
+
+  let initialVoteResponse;
+  try {
+    initialVoteResponse = await fetch(`${API_URL}/submit-vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ideaId: ideaId,
+        currencyId: currencyId,
+        coins: price,
+        fid: fid
+      })
+    });
+  } catch (error) {
+    console.error('Error creating initial vote', error);
+    return;
+  }
+  const initialVoteData = await initialVoteResponse.json();
+  const voteId = initialVoteData.id;
+  console.log("Initial vote id:", voteId);
   
   const loggedInWallet = await frame.sdk.wallet.ethProvider.request({
     method: 'eth_requestAccounts'
   });
 
-  const price = PRICE_LOOKUP[currency.name];
-  
   if (currency.contract_address === 'mainnet') {
     // ETH transfer branch
     let txHash = null;
     try {
+      showTransactionOverlay();
       const tx = await frame.sdk.wallet.ethProvider.request({
         method: 'eth_sendTransaction',
         params: [{
@@ -183,14 +223,14 @@ const submitVote = async (ideaId, currencyId) => {
           value: ethToWei(price)
         }]
       });
+      hideTransactionOverlay();
       txHash = tx;
       console.log('Transaction sent:', txHash);
     } catch (error) {
+      hideTransactionOverlay();
       console.error('Error sending transaction', error);
       return;
     }
-
-    const fid = await (frame.sdk.context.user).fid
     
     await fetch(`${API_URL}/submit-vote`, {
       method: 'POST',
@@ -209,23 +249,19 @@ const submitVote = async (ideaId, currencyId) => {
   } else {
     // Token (ERC20) transfer branch
     const transferFunctionSignature = '0xa9059cbb';
-    // The token contract address: where the transaction is sent
     const tokenContractAddress = currency.contract_address;
-    // The recipient (vote destination) remains CONTRACT_ADDRESS
     const recipient = CONTRACT_ADDRESS;
-    // Remove "0x" and pad recipient to 32 bytes (64 hex characters)
     const recipientPadded = recipient.slice(2).padStart(64, '0');
 
-    // Convert token amount (e.g., 100 tokens) and remove "0x" for padding
     const amountHex = ethToWei(price);
     const amountNoPrefix = amountHex.startsWith('0x') ? amountHex.slice(2) : amountHex;
     const paddedAmount = amountNoPrefix.padStart(64, '0');
 
-    // Construct the ERC20 transfer data payload
     const data = `${transferFunctionSignature}${recipientPadded}${paddedAmount}`;
 
     let txHash = null;
     try {
+      showTransactionOverlay();
       const tx = await frame.sdk.wallet.ethProvider.request({
         method: 'eth_sendTransaction',
         params: [{
@@ -235,33 +271,34 @@ const submitVote = async (ideaId, currencyId) => {
           value: '0x0'
         }]
       });
+      hideTransactionOverlay();
       txHash = tx;
       console.log('Transaction sent:', txHash);
     } catch (error) {
+      hideTransactionOverlay();
       alert('Error sending transaction', error);
       console.error('Error sending transaction', error);
       return;
     }
 
-    const fid = await (frame.sdk.context.user).fid
-
-    await fetch(`${API_URL}/submit-vote`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ideaId: ideaId,
-        currencyId: currencyId,
-        coins: price,
-        fid: fid,
-        txHash: txHash
-      })
-    });
+    try {
+      await fetch(`${API_URL}/finish-vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          voteId: voteId,
+          txHash: txHash
+        })
+      });
+    } catch (error) {
+      console.error('Error updating vote with txHash', error);
+      return;
+    }
 
     const ideas = await fetchIdeas();
     renderIdeas(ideas);
   }
 };
-
 
 function openModal(idea) {
   const modalOverlay = document.createElement('div');
