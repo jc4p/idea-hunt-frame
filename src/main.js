@@ -365,13 +365,14 @@ function openAddIdeaModal() {
       return;
     }
     try {
+      const fid = await (frame.sdk.context.user).fid
       const response = await fetch(`${API_URL}/submit-idea`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title,
           description,
-          creatorFid: frame.sdk.context.user.fid
+          creatorFid: fid
         })
       });
       if (!response.ok) {
