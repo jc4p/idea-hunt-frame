@@ -11,6 +11,15 @@ async function getCurrencies() {
 
 const CONTRACT_ADDRESS = '0x14C451E98F1ef59A5D14DA7e6324DDF19c2CB6a0';
 
+const PRICE_LOOKUP = {
+  'ETH': 0.001,
+  'HIGHER': 100,
+  'DEGEN': 300,
+  'MOXIE': 300,
+  'CLANKER': 0.01,
+  'BNKR': 5000
+}
+
 getCurrencies().then(currencies => {
   console.log(currencies);
   window.currencies = currencies;
@@ -159,6 +168,8 @@ const submitVote = async (ideaId, currencyId) => {
   const loggedInWallet = await frame.sdk.wallet.ethProvider.request({
     method: 'eth_requestAccounts'
   });
+
+  const price = PRICE_LOOKUP[currency.name];
   
   if (currency.contract_address === 'mainnet') {
     // ETH transfer branch
@@ -169,7 +180,7 @@ const submitVote = async (ideaId, currencyId) => {
         params: [{
           from: loggedInWallet[0],
           to: CONTRACT_ADDRESS,
-          value: ethToWei(0.001)
+          value: ethToWei(price)
         }]
       });
       txHash = tx;
@@ -187,7 +198,7 @@ const submitVote = async (ideaId, currencyId) => {
       body: JSON.stringify({
         ideaId: ideaId,
         currencyId: currencyId,
-        coins: 0.001,
+        coins: price,
         fid: fid,
         txHash: txHash
       })
@@ -206,7 +217,7 @@ const submitVote = async (ideaId, currencyId) => {
     const recipientPadded = recipient.slice(2).padStart(64, '0');
 
     // Convert token amount (e.g., 100 tokens) and remove "0x" for padding
-    const amountHex = ethToWei(100);
+    const amountHex = ethToWei(price);
     const amountNoPrefix = amountHex.startsWith('0x') ? amountHex.slice(2) : amountHex;
     const paddedAmount = amountNoPrefix.padStart(64, '0');
 
@@ -240,7 +251,7 @@ const submitVote = async (ideaId, currencyId) => {
       body: JSON.stringify({
         ideaId: ideaId,
         currencyId: currencyId,
-        coins: 100,
+        coins: price,
         fid: fid,
         txHash: txHash
       })
@@ -272,6 +283,8 @@ function openModal(idea) {
   window.currencies.forEach(currency => {
     const option = document.createElement('div');
     option.className = 'currency-option';
+
+    const price = PRICE_LOOKUP[currency.name];
     
     const radio = document.createElement('input');
     radio.type = 'radio';
@@ -284,9 +297,7 @@ function openModal(idea) {
     option.addEventListener('click', () => {
       if (radio.checked) {
         voteButton.classList.remove('disabled');
-        voteButton.textContent = currency.name == 'ETH'
-          ? `VOTE 0.001 ${currency.name}`
-          : `VOTE 100 ${currency.name}`;
+        voteButton.textContent = `VOTE ${price} ${currency.name}`;
       } else {
         voteButton.classList.add('disabled');
         voteButton.textContent = 'VOTE';
