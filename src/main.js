@@ -34,7 +34,7 @@ function renderIdeas(ideas) {
 
   const addIdeaButton = document.createElement('button');
   addIdeaButton.className = 'add-idea-button';
-  addIdeaButton.textContent = 'ADD IDEA';
+  addIdeaButton.textContent = 'SUBMIT IDEA';
   addIdeaButton.addEventListener('click', openAddIdeaModal);
   headerContainer.appendChild(addIdeaButton);
 
@@ -342,6 +342,7 @@ function openAddIdeaModal() {
       if (!response.ok) {
         throw new Error('Failed to submit idea.');
       }
+
       const ideas = await fetchIdeas();
       renderIdeas(ideas);
     } catch (error) {
