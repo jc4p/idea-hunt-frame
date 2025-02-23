@@ -20,9 +20,12 @@ body {
   background-color: #fff;
 }
 
+#app {
+  height: 97vh;
+}
+
 .ideas-container {
   width: 97vw;
-  height: 97vh;
   margin: 0;
   padding: 1rem;
   background-color: #fff;
@@ -34,7 +37,6 @@ body {
 @media (min-width: 768px) {
   .ideas-container {
     max-width: 768px;
-    height: 97vh;
     margin: auto;
   }
 }
