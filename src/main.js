@@ -144,18 +144,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 const ethToWei = (eth) => {
-  return BigInt(Math.floor(eth * 1e18)).toString(16);
+  return '0x' + BigInt(Math.floor(eth * 1e18)).toString(16);
 };
 
 const submitVote = async (ideaId, currencyId) => {
   console.log('submit vote', ideaId, currencyId);
   const currency = window.currencies.find(c => c.id == currencyId);
   console.log(currency);
+  
   const loggedInWallet = await frame.sdk.wallet.ethProvider.request({
     method: 'eth_requestAccounts'
   });
   
-  if (currency.contract_address == 'mainnet') {
+  if (currency.contract_address === 'mainnet') {
+    // ETH transfer branch
     let txHash = null;
     try {
       const tx = await frame.sdk.wallet.ethProvider.request({
@@ -172,7 +174,6 @@ const submitVote = async (ideaId, currencyId) => {
       console.error('Error sending transaction', error);
       return;
     }
-
     
     await fetch(`${API_URL}/submit-vote`, {
       method: 'POST',
@@ -189,12 +190,21 @@ const submitVote = async (ideaId, currencyId) => {
     const ideas = await fetchIdeas();
     renderIdeas(ideas);
   } else {
+    // Token (ERC20) transfer branch
     const transferFunctionSignature = '0xa9059cbb';
+    // The token contract address: where the transaction is sent
+    const tokenContractAddress = currency.contract_address;
+    // The recipient (vote destination) remains CONTRACT_ADDRESS
     const recipient = CONTRACT_ADDRESS;
+    // Remove "0x" and pad recipient to 32 bytes (64 hex characters)
     const recipientPadded = recipient.slice(2).padStart(64, '0');
 
-    const amount = ethToWei(100)
-    const paddedAmount = amount.padStart(64, '0');
+    // Convert token amount (e.g., 100 tokens) and remove "0x" for padding
+    const amountHex = ethToWei(100);
+    const amountNoPrefix = amountHex.startsWith('0x') ? amountHex.slice(2) : amountHex;
+    const paddedAmount = amountNoPrefix.padStart(64, '0');
+
+    // Construct the ERC20 transfer data payload
     const data = `${transferFunctionSignature}${recipientPadded}${paddedAmount}`;
 
     let txHash = null;
@@ -203,7 +213,7 @@ const submitVote = async (ideaId, currencyId) => {
         method: 'eth_sendTransaction',
         params: [{
           from: loggedInWallet[0],
-          to: CONTRACT_ADDRESS,
+          to: tokenContractAddress,
           data: data,
           value: '0x0'
         }]
@@ -231,6 +241,7 @@ const submitVote = async (ideaId, currencyId) => {
     renderIdeas(ideas);
   }
 };
+
 
 function openModal(idea) {
   const modalOverlay = document.createElement('div');
