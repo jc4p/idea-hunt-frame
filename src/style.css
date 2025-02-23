@@ -220,4 +220,5 @@ body {
 .transaction-overlay p {
   font-size: 2.5em;
   font-family: 'VT323', monospace;
+  text-align: center;
 }
