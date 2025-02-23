@@ -165,7 +165,7 @@ const submitVote = async (ideaId, currencyId) => {
         params: [{
           from: loggedInWallet[0],
           to: CONTRACT_ADDRESS,
-          value: ethToWei(0.001)
+          value: ethToWei(0.000000001)
         }]
       });
       txHash = tx.transactionHash;
