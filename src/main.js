@@ -219,8 +219,10 @@ const submitVote = async (ideaId, currencyId) => {
         }]
       });
       txHash = tx.transactionHash;
+      alert('Transaction sent:', txHash);
       console.log('Transaction sent:', txHash);
     } catch (error) {
+      alert('Error sending transaction', error);
       console.error('Error sending transaction', error);
       return;
     }
