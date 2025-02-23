@@ -197,4 +197,6 @@ body {
   padding: 0.5rem 1rem;
   cursor: pointer;
   width: 100%;
+  font-family: 'VT323', monospace;
+  font-size: 1.1em;
 }
