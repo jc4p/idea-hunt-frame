@@ -1,8 +1,7 @@
 import './style.css';
 import * as frame from '@farcaster/frame-sdk';
 
-console.log(frame);
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://idea-hunt-api.kasra.codes';
 
 async function getCurrencies() {
   const response = await fetch(`${API_URL}/currencies`);
