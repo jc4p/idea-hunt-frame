@@ -1,0 +1,17 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjk3NzIzMywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweGE2N0JhMDI4MTIzMWVCOUUyZWE0Y0Y5Nzg5NGMwYjBiNUI4MDFDYzYifQ",
+    "payload": "eyJkb21haW4iOiJpZGVhLWh1bnQua2FzcmEuY29kZXMifQ",
+    "signature": "MHhmZTcxYjE4YTM1NWU3YjVmNTkwNjFjMjlmNzczNDhiMmU4ZDUwZGY2YTE3ZTg2ODZkMWIwZGMzYjIyZGU1MzUzMjI2MzlmNjVjYTQzYzIwNjYxYTU4N2ViM2U0ODk4ODE1NjBlYWYxZDVmZDgwNzk2ZGVlMTUzZmFhMDRmYjYwZDFi"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Idea Hunt",
+    "iconUrl": "https://cover-art.kasra.codes/enneagram-icon-512-square.png",
+    "homeUrl": "https://idea-hunt.kasra.codes",
+    "imageUrl": "https://cover-art.kasra.codes/enneagram-icon-512-square.png",
+    "buttonTitle": "Browse & Vote For Frame Ideas",
+    "splashImageUrl": "https://cover-art.kasra.codes/enneagram-icon-512-square.png",
+    "splashBackgroundColor": "#FB8F9C"
+  }
+}
