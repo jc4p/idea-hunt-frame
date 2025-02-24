@@ -18,7 +18,8 @@ const PRICE_LOOKUP = {
   'DEGEN': 300,
   'MOXIE': 300,
   'CLANKER': 0.01,
-  'BNKR': 5000
+  'BNKR': 5000,
+  'USDC': 2
 }
 
 getCurrencies().then(currencies => {
